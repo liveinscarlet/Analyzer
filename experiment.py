@@ -12,8 +12,17 @@ if __name__ == "__main__":
     freq_stop = 5 * 10 ** 9
 
     # analyzer.bandwidth_Setup(freq_start, freq_stop, points)
+    print('Ready to input traces...')
+    print(PNA.get_trace(list(input())))
 
-    print(PNA.get_trace(1, points))
+
+
+
+
+
+
+
+
 
 
 

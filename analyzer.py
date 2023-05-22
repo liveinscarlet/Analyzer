@@ -8,10 +8,10 @@ class Pna:
                  addr_pna: str = 'TCPIP0::169.254.25.7::inst0::INSTR'):
         self.rm = visa_manager
         self.pna = visa_manager.open_resource(addr_pna)  # The name of the PNA in the experiment
-        self.pna.write("SYStem:PRESet")
-        self.pna.write("FORM REAL, 64")
+        self.pna.write("SYStem:PRESet")     # Sets up default parameters of the PNA
+        self.pna.write("FORM REAL, 64")     # Defines type of output data and precision
         self.pna.write("FORMat:DATA ascii")
-        print(self.pna.query("*IDN?"))
+        print(self.pna.query("*IDN?"))      # Test of IDN function,  prints name of the device
 
     def bandwidth_Setup(self, freq_start, freq_stop, num_of_points):
 
@@ -23,10 +23,13 @@ class Pna:
         :return: NaN
         """
 
-        self.pna.write("SENS:SWE:TYPE LIN")
+        self.pna.write("SENS:SWE:TYPE LIN")                         # Sets up linear scale of freq
         self.pna.write(f"SENS:FREQ:START {freq_start}")
         self.pna.write(f"SENS:FREQ:STOP {freq_stop}")
         self.pna.write(f"SENS:SWE:POINts {num_of_points}")
+
+    def Reset(self):
+        self.pna.write("*RST")
 
     def attenuating_Setup(self, output_attenuation_power_level):
 
@@ -36,7 +39,7 @@ class Pna:
         :return: NaN
         """
 
-        if (output_attenuation_power_level % 5) or (output_attenuation_power_level > 35):
+        if (output_attenuation_power_level % 5) or (output_attenuation_power_level > 35):   # Проверка на дурака
             print('Такое ослабление использовать нельзя')
         else:
             self.pna.query(f"SENS:ATT BREC, {output_attenuation_power_level}")
@@ -49,7 +52,7 @@ class Pna:
         :return: NaN
         """
 
-        if output_power > 20:
+        if output_power > 20:   # Проверка на дурака
             print('Такую мощность подавать нельзя')
         else:
             self.pna.query(f"SOUR:POW:CORR:LEV {output_power}")
@@ -86,7 +89,7 @@ class Pna:
     def get_freq(freq_start, freq_stop, num_of_points):
 
         """
-        This function forms array of frequencies
+        This function forms an array of frequencies
         :param freq_start: the lowest possible frequency
         :param freq_stop: the highest possible frequency
         :param num_of_points: amount of data points
@@ -94,5 +97,22 @@ class Pna:
         """
 
         return np.linspace(freq_start, freq_stop, num_of_points)
+
+    pass
+
+
+class NVNA(Pna):    # Class for Nonlinear Vector Network Analyzer
+    def __init__(self, visa_manager: pyvisa.ResourceManager, addr_nvna: str = 'TCPIP0::169.254.25.7::inst0::INSTR'):
+        super().__init__(visa_manager, addr_nvna)
+        self.rm = visa_manager
+        self.nvna = visa_manager.open_resource(addr_nvna)  # The name of the PNA in the experiment
+        self.nvna.write("SYStem:PRESet")
+        print(self.nvna.query("*IDN?"))
+
+    def Set_Up_NVNA(self):
+        """
+        This function sets up default parameters of the Nonlinear Vector Network Analyzer
+        :return: NaN
+        """
 
     pass

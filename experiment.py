@@ -13,10 +13,8 @@ if __name__ == "__main__":
 
     # analyzer.bandwidth_Setup(freq_start, freq_stop, points)
     print('Ready to input traces...')
-    print(PNA.get_trace(list(input())))
-
-
-
+    # print(PNA.get_trace((input())))
+    PNA.set_new_trace((input()))
 
 
 
